@@ -2,13 +2,14 @@
 
 library(tidyverse)
 library(DBI)
+library(odbc)
 library(here)
 library(janitor)
 
 # CONNECTION OBJECT ####
 source(here::here('rscript', 'dsu_odbc_connection_object.R'))
 
-faculty_load_sql <- dbGetQuery(con, read_file(here::here('sql', 'faculty_load.sql'))) %>% 
+demographics_sql <- dbGetQuery(con, read_file(here::here('sql', 'demographics.sql'))) %>% 
   mutate_if(is.factor, as.character) %>% 
   clean_names() %>% 
   as_tibble()
@@ -16,4 +17,4 @@ faculty_load_sql <- dbGetQuery(con, read_file(here::here('sql', 'faculty_load.sq
 # csv file to explore the data
 #write_csv(adjunct_faculty_sql, here::here('data', 'faculty_load.csv'))
 # RData loads into the app easier
-save(faculty_load_sql, file = here::here('data', 'faculty_load.RData'))
+save(demographics_sql, file = here::here('data', 'audit_reports.RData'))
