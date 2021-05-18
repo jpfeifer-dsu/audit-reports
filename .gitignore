@@ -2,3 +2,4 @@
 .Rhistory
 .RData
 .Ruserdata
+.rscript/dsu_odbc_connection_object.R
