@@ -1,1 +1,0 @@
-con <- dbConnect(odbc(),"PROD", UID = 'enroll', PWD = 'rfft6gfr6')
