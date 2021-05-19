@@ -1,0 +1,40 @@
+---
+title: "Audit Reports: Student Enrollment"
+author: "Justin Pfeifer"
+date: "5/18/2021"
+output: html_document
+---
+
+```{r, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = FALSE, fig.width = 6
+)
+```
+
+
+```{r}
+library(tidyverse)
+library(DT)
+```
+
+
+```{r, echo=FALSE, message=FALSE}
+load(here::here('data', 'audit_reports.RData'))
+```
+
+```{r, echo=FALSE, message=FALSE}
+## Check to make sure gender is not null
+source(here::here('rscript', 'demographics.R'))
+```
+
+
+
+## Results {.tabset}
+
+### Error Summary
+
+### Demographics
+
+### Student Type
+
+### Courses
