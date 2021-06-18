@@ -7,14 +7,13 @@ library(here)
 library(janitor)
 
 # CONNECTION OBJECT ####
-source(here::here('rscript', 'dsu_odbc_connection_object.R'))
+source(here::here('rscript', 'dsu_odbc_prod_connection_object.R'))
 
-demographics_sql <- dbGetQuery(con, read_file(here::here('sql', 'demographics.sql'))) %>% 
+student_sql <- dbGetQuery(con, read_file(here::here('sql', 'student.sql'))) %>% 
   mutate_if(is.factor, as.character) %>% 
   clean_names() %>% 
   as_tibble()
 
-# csv file to explore the data
-#write_csv(adjunct_faculty_sql, here::here('data', 'faculty_load.csv'))
-# RData loads into the app easier
-save(demographics_sql, file = here::here('data', 'audit_reports.RData'))
+# Save data as a RDate file
+save(student_sql, file = here::here('data', 'students.RData'))
+

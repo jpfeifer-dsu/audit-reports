@@ -1,40 +1,232 @@
 ---
-title: "Audit Reports: Student Enrollment"
-author: "Justin Pfeifer"
-date: "5/18/2021"
 output: html_document
+runtime: shiny
 ---
 
-```{r, include=FALSE, warning=FALSE}
+```{r include=FALSE, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
 knitr::opts_chunk$set(
   comment = "#>", echo = FALSE, fig.width = 6
 )
 ```
 
 
-```{r}
+```{r load libraries, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
+library(shiny)
+library(viridis)
 library(tidyverse)
+library(gt)
+library(readr)
+library(knitr)
+library(here)
 library(DT)
+library(scales)
 ```
 
 
-```{r, echo=FALSE, message=FALSE}
-load(here::here('data', 'audit_reports.RData'))
+```{r}
+#Define Functions
+mkd_table <- function(err_data, title, subtitle) {
+  {{err_data}}
+  gt(err_data) %>%
+  tab_header(
+    title = md(title),
+    subtitle = paste("Error Message: ", subtitle)
+    ) %>%
+  tab_options(
+    heading.subtitle.font.size = 12,
+    heading.align = "left",
+    table.border.top.color = "white",
+    column_labels.border.bottom.color = "black",
+    table.align = "left",
+    table.width = pct(100)
+  ) 
+  }
 ```
 
-```{r, echo=FALSE, message=FALSE}
-## Check to make sure gender is not null
-source(here::here('rscript', 'demographics.R'))
+```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
+source(here::here('rscript', 'student_checks.R'))
+
+```
+
+## Student - Audit Reports {.tabset}
+
+```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
+selectizeInput('term', '', choices = c("Select" = "", c("202040", "202120")))
+```
+
+```{r}
+if(nrow(error_check_01) > 0) {
+gt_output(
+  
+  error_check_01 %>%
+    filter(term == input$term)
+)
+}
 ```
 
 
-
-## Results {.tabset}
-
-### Error Summary
 
 ### Demographics
+```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
+data_01 <- if(nrow(error_check_01) > 0) {
+  mkd_table(error_check_01, "Gender", unique(error_check_01$error_message)) %>%
+    cols_label(term = md("**Term**"),
+             pidm = md("**PIDM**"),
+             banner_id = md("**Student ID**"),
+             first_name = md("**First Name**"),
+             last_name = md("**Last Name**"),
+             gender = md("**Gender**"),
+             error_message = md("**Error Message**"),
+             banner_table = md("**Table Name(s)**"),
+             banner_column = md("**Column Name(s)**")
+             ) %>%
+    cols_hide(error_message) %>%
+    br()
+}
+```
+
+```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
+if(nrow(error_check_02) > 0) {
+mkd_table(error_check_02, "County - US", unique(error_check_02$error_message)) %>%
+    cols_label(term = md("**Term**"),
+               pidm = md("**PIDM**"),
+               banner_id = md("**Student ID**"),
+               first_name = md("**First Name**"),
+               last_name = md("**Last Name**"),
+               admit_country = md("**Country**"),
+               admit_county = md("**County**"),
+               error_message = md("**Error Message**"),
+               banner_table = md("**Table Name(s)**"),
+               banner_column = md("**Column Name(s)**")
+               ) %>%
+    cols_hide(error_message) %>%
+    br()
+}
+```
+
+```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
+if(nrow(error_check_03) > 0) {
+mkd_table(error_check_03, "State", unique(error_check_03$error_message)) %>%
+    cols_label(term = md("**Term**"),
+               pidm = md("**PIDM**"),
+               banner_id = md("**Student ID**"),
+               first_name = md("**First Name**"),
+               last_name = md("**Last Name**"),
+               admit_state = md("**State**"),
+               error_message = md("**Error Message**"),
+               banner_table = md("**Table Name(s)**"),
+               banner_column = md("**Column Name(s)**")
+               ) %>%
+    cols_hide(error_message) %>%
+    br()
+}
+```
+
+```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
+if(nrow(error_check_04) > 0) {
+  mkd_table(error_check_04, "County - Utah", unique(error_check_04$error_message)) %>%
+    cols_label(term = md("**Term**"),
+               pidm = md("**PIDM**"),
+               banner_id = md("**Student ID**"),
+               first_name = md("**First Name**"),
+               last_name = md("**Last Name**"),
+               admit_state = md("**State**"),
+               admit_county = md("**County**"),
+               error_message = md("**Error Message**"),
+               banner_table = md("**Table Name(s)**"),
+               banner_column = md("**Column Name(s)**")
+               ) %>%
+    cols_hide(error_message) %>%
+    br()
+    }
+```
+
+```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
+if(nrow(error_check_05) > 0) {
+  mkd_table(error_check_05, "Missing Country", unique(error_check_05$error_message)) %>%
+    cols_label(term = md("**Term**"),
+               pidm = md("**PIDM**"),
+               banner_id = md("**Student ID**"),
+               first_name = md("**First Name**"),
+               last_name = md("**Last Name**"),
+               admit_state = md("**State**"),
+               error_message = md("**Error Message**"),
+               banner_table = md("**Table Name(s)**"),
+               banner_column = md("**Column Name(s)**")
+               ) %>%
+    cols_hide(error_message) %>%
+    br()
+    }
+```
+
+```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
+if(nrow(error_check_06) > 0) {
+mkd_table(error_check_06, "Visa Type & Citizenship Code", unique(error_check_06$error_message)) %>%
+      cols_label(term = md("**Term**"),
+                 pidm = md("**PIDM**"),
+                 banner_id = md("**Student ID**"),
+                 first_name = md("**First Name**"),
+                 last_name = md("**Last Name**"),
+                 citz_code = md("**Citizen Code**"),
+                 visa_type = md("**Visa Type**"),
+                 error_message = md("**Error Message**"),
+                 banner_table = md("**Table Name(s)**"),
+                 banner_column = md("**Column Name(s)**")
+                 ) %>%
+      cols_hide(error_message) %>%
+      br()
+      }
+```
+
+
+```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE, fig.align='left'}
+if(nrow(error_check_07) > 0) {
+  mkd_table(error_check_07, "High School Code", unique(error_check_07$error_message)) %>%
+    cols_label(term = md("**Term**"),
+               pidm = md("**PIDM**"),
+               banner_id = md("**Student ID**"),
+               first_name = md("**First Name**"),
+               last_name = md("**Last Name**"),
+               age = md("**Age Code**"),
+               high_school_code = md("**HS Code**"),
+               error_message = md("**Error Message**"),
+               banner_table = md("**Table Name(s)**"),
+               banner_column = md("**Column Name(s)**")
+               ) %>%
+    cols_hide(error_message) %>%
+    br()
+    }
+```
+
+### Degrees & Programs
+```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE, fig.align='left'}
+#source(here::here('rscript', 'programs.R'))
+mkd_table(programs_check_01, "HS Student but no ND* Program", "Test")
+br()
+```
+
+```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE, fig.align='left'}
+mkd_table(programs_check_02, "Blank / Missing Programs", "Test")
+```
 
 ### Student Type
+```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
+mkd_table(stype_check_01, "Returning Students", "Subtitle")
+mkd_table(stype_check_02, "HS Concurrent Student", "Subtitle")
+mkd_table(stype_check_03, "HS Concurrent Student", "Subtitle")
+mkd_table(stype_check_04, "Personal Interest Student", "Subtitle")
+mkd_table(stype_check_05, "Graduate Students", "Subtitle")
+mkd_table(stype_check_06, "", "Subtitle")
+mkd_table(stype_check_07, "", "Subtitle")
+mkd_table(stype_check_08, "", "Subtitle")
+mkd_table(stype_check_09, "", "Subtitle")
+mkd_table(stype_check_10, "", "Subtitle")
+mkd_table(stype_check_11, "", "Subtitle")
+mkd_table(stype_check_12, "", "Subtitle")
+mkd_table(stype_check_13, "", "Subtitle")
+mkd_table(stype_check_14, "", "Subtitle")
+mkd_table(stype_check_15, "", "Subtitle")
 
-### Courses
+
+
+```
