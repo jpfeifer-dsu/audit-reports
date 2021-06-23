@@ -2,9 +2,10 @@ library(tidyverse)
 library(lubridate)
 library(janitor)
 
-load(here::here('data', 'students.RData'))
-load(here::here('data', 'cohorts.RData'))
-load(here::here('data', 'courses.RData'))
+
+load_data_from_rds('courses.RData')
+load_data_from_rds('courses.RData')
+
 
 #Function Definitions
 fn_return_data <- function(data, category, message, table_name, column_name) {
@@ -81,6 +82,10 @@ filter_error_10 <- filter(student_sql, is.na(citz_code))
 error_check_10 <- fn_return_data(filter_error_10, 'Demographics', 'Null citizenship code found', 'spbpers', 'spbpers_citz_code') %>%
   select(all_of(columns01), citz_code, all_of(columns02), all_of(columns03))
 
+#Demographics - High School Graduation Date is NULL
+filter_error_11 <- filter(student_sql, is.na(high_school_grad_date) & student_type != 'P')
+error_check_11 <- fn_return_data(filter_error_11, 'Demographics', 'Missing High School Graduation Date', 'sorhsch', 'sorhsch_graduation_date') %>%
+  select(all_of(columns01), student_type, high_school_grad_date, all_of(columns02), all_of(columns03))
 
 #PROGRAM CHECKS
 
@@ -170,6 +175,134 @@ filter_students_15 <- select(student_sql, everything()) %>%
   filter(student_level == 'GR' & student_type == '4' & days_since_last_enrolled < 240)
 stype_check_15 <- fn_return_data(filter_students_15, 'Student Type', 'Graduate student has not attended before') %>%
   select(all_of(columns01), student_level, student_type, entry_action, last_term_enrolled, all_of(columns02))
+
+#Transfers - Undergraduates
+filter_students_16 <- filter(student_sql, !student_level == 'UG' & student_type == 'T')
+stype_check_16 <- fn_return_data(filter_students_16, 'Student Type', 'Undergraduate Student Level and type does not align') %>%
+  select(all_of(columns01), student_level, student_type, entry_action, all_of(columns02))  
+  
+filter_students_17 <- filter(student_sql, student_level == 'UG' & student_type == 'T' & ! is.na(first_term_enrolled))
+stype_check_17 <- fn_return_data(filter_students_17, 'Student Type', 'Student has already attended') %>%
+  select(all_of(columns01), first_term_enrolled, student_type, entry_action, all_of(columns02))
+
+filter_students_18 <- filter(student_sql, student_level == 'UG' & student_type %in% c('N', 'F') &  !is.na(last_transfer_term))
+stype_check_18 <- fn_return_data(filter_students_18, 'Student Type', 'Student has transfer record') %>%
+  select(all_of(columns01), last_transfer_term, student_type, entry_action, all_of(columns02))
+
+filter_students_19 <- filter(student_sql, student_level == 'UG' & student_type == 'T' & !is.na(sgrchrt_chrt_code) & sgrchrt_term_code_eff != term)
+stype_check_19 <- fn_return_data(filter_students_19, 'Student Type', 'Student has a cohort record') %>%
+  select(all_of(columns01), sgrchrt_chrt_code, student_type, first_term_enrolled, last_term_enrolled, entry_action, sgrchrt_chrt_code, sgrchrt_term_code_eff, all_of(columns02))
+
+#First-time Freshman (FF)
+filter_students_20 <- filter(student_sql, !student_level == 'UG' & student_type == 'F')
+stype_check_20 <- fn_return_data(filter_students_20, 'Student Type', 'Student Level and type does not align') %>%
+  select(all_of(columns01), student_level, student_type, entry_action, all_of(columns02))
+
+filter_students_21 <- filter(student_sql, 
+                             student_level == 'UG'  & 
+                             student_type == 'F' & 
+                             !is.na(first_term_enrolled) & 
+                             first_term_enrolled < term &
+                             first_term_enrolled_start_date > high_school_grad_date
+                             )
+stype_check_21 <- fn_return_data(filter_students_21, 'Student Type', 'Student has already attended') %>%
+  select(all_of(columns01), first_term_enrolled, last_term_enrolled, high_school_grad_date, student_type, entry_action, all_of(columns02))
+
+filter_students_22 <- select(student_sql, everything()) %>%
+  mutate(days_since_hs_graduation = difftime(term_start_date, high_school_grad_date)) %>%
+  filter(student_level == 'UG'  & 
+           student_type == 'F' & !is.na(first_term_enrolled) & 
+           days_since_hs_graduation < 365
+         ) 
+stype_check_22 <- fn_return_data(filter_students_22, 'Student Type', 'Graduated from HS within a year') %>%
+  select(all_of(columns01), first_term_enrolled, term_start_date, high_school_grad_date, days_since_hs_graduation, student_type, entry_action, all_of(columns02))
+
+filter_students_23 <- filter(student_sql, student_level == 'UG' & student_type == 'F' & !is.na(sgrchrt_chrt_code) & sgrchrt_term_code_eff != term)
+stype_check_23 <- fn_return_data(filter_students_23, 'Student Type', 'Student has a cohort record') %>%
+  select(all_of(columns01), sgrchrt_chrt_code, student_type, first_term_enrolled, last_term_enrolled, entry_action, sgrchrt_chrt_code, sgrchrt_term_code_eff, all_of(columns02))
+
+#First-time Freshman Highschool (FH)
+filter_students_24 <- filter(student_sql, !student_level == 'UG' & student_type == 'N')
+stype_check_24 <- fn_return_data(filter_students_24, 'Student Type', 'Student Level and type does not align') %>%
+  select(all_of(columns01), student_level, student_type, entry_action, all_of(columns02))
+
+filter_students_25 <- filter(student_sql, 
+                             student_level == 'UG'  & 
+                               student_type == 'N' & 
+                               !is.na(first_term_enrolled) & 
+                               first_term_enrolled < term &
+                               first_term_enrolled_start_date > high_school_grad_date
+)
+stype_check_25 <- fn_return_data(filter_students_25, 'Student Type', 'Student has already attended') %>%
+  select(all_of(columns01), first_term_enrolled, last_term_enrolled, high_school_grad_date, student_type, entry_action, all_of(columns02))
+
+filter_students_26 <- select(student_sql, everything()) %>%
+  mutate(days_since_hs_graduation = difftime(term_start_date, high_school_grad_date)) %>%
+  filter(student_level == 'UG'  & 
+           student_type == 'N' & !is.na(first_term_enrolled) & 
+           days_since_hs_graduation > 365
+  ) 
+stype_check_26 <- fn_return_data(filter_students_26, 'Student Type', 'Graduated from HS within a year') %>%
+  select(all_of(columns01), first_term_enrolled, term_start_date, high_school_grad_date, days_since_hs_graduation, student_type, entry_action, all_of(columns02))
+
+filter_students_27 <- filter(student_sql, student_level == 'UG' & student_type == 'N' & !is.na(sgrchrt_chrt_code) & sgrchrt_term_code_eff != term)
+stype_check_27 <- fn_return_data(filter_students_27, 'Student Type', 'Student has a cohort record') %>%
+  select(all_of(columns01), sgrchrt_chrt_code, student_type, first_term_enrolled, last_term_enrolled, entry_action, sgrchrt_chrt_code, sgrchrt_term_code_eff, all_of(columns02))
+
+#Entry Action (FF)
+filter_students_28 <- filter(student_sql, !student_level == 'UG' & entry_action == 'FF')
+stype_check_28 <- fn_return_data(filter_students_28, 'Student Type', 'Student Level and type does not align') %>%
+  select(all_of(columns01), student_level, student_type, entry_action, all_of(columns02))
+
+filter_students_29 <- filter(student_sql, 
+                             student_level == 'UG'  & 
+                               entry_action == 'FF' & 
+                               !is.na(first_term_enrolled) & 
+                               first_term_enrolled < term &
+                               first_term_enrolled_start_date > high_school_grad_date
+)
+stype_check_29 <- fn_return_data(filter_students_29, 'Student Type', 'Student has already attended') %>%
+  select(all_of(columns01), first_term_enrolled, last_term_enrolled, high_school_grad_date, student_type, entry_action, all_of(columns02))
+
+filter_students_30 <- select(student_sql, everything()) %>%
+  mutate(days_since_hs_graduation = difftime(term_start_date, high_school_grad_date)) %>%
+  filter(student_level == 'UG'  & 
+           entry_action == 'FF' & !is.na(first_term_enrolled) & 
+           days_since_hs_graduation < 365
+  ) 
+stype_check_30 <- fn_return_data(filter_students_30, 'Student Type', 'Graduated from HS within a year') %>%
+  select(all_of(columns01), first_term_enrolled, term_start_date, high_school_grad_date, days_since_hs_graduation, student_type, entry_action, all_of(columns02))
+
+filter_students_31 <- filter(student_sql, student_level == 'UG' & entry_action == 'FF' & !is.na(sgrchrt_chrt_code) & sgrchrt_term_code_eff != term)
+stype_check_31 <- fn_return_data(filter_students_31, 'Student Type', 'Student has a cohort record') %>%
+  select(all_of(columns01), sgrchrt_chrt_code, student_type, first_term_enrolled, last_term_enrolled, entry_action, sgrchrt_chrt_code, sgrchrt_term_code_eff, all_of(columns02))
+
+#Entry Action (FH)
+filter_students_32 <- filter(student_sql, !student_level == 'UG' & entry_action == 'FH')
+stype_check_32 <- fn_return_data(filter_students_32, 'Student Type', 'Student Level and type does not align') %>%
+  select(all_of(columns01), student_level, student_type, entry_action, all_of(columns02))
+
+filter_students_33 <- filter(student_sql, 
+                             entry_action == 'FH'  & 
+                             !is.na(first_term_enrolled) & 
+                             first_term_enrolled < term &
+                             first_term_enrolled_start_date > high_school_grad_date
+)
+stype_check_33 <- fn_return_data(filter_students_33, 'Student Type', 'Student has already attended') %>%
+  select(all_of(columns01), first_term_enrolled, last_term_enrolled, high_school_grad_date, student_type, entry_action, all_of(columns02))
+
+filter_students_34 <- select(student_sql, everything()) %>%
+  mutate(days_since_hs_graduation = difftime(term_start_date, high_school_grad_date)) %>%
+  filter(student_level == 'UG'  & 
+           entry_action == 'FH' & !is.na(first_term_enrolled) & 
+           days_since_hs_graduation > 365
+  ) 
+stype_check_34 <- fn_return_data(filter_students_34, 'Student Type', 'Graduated from HS within a year') %>%
+  select(all_of(columns01), first_term_enrolled, term_start_date, high_school_grad_date, days_since_hs_graduation, student_type, entry_action, all_of(columns02))
+
+filter_students_35 <- filter(student_sql, student_level == 'UG' & entry_action == 'FH' & !is.na(sgrchrt_chrt_code) & sgrchrt_term_code_eff != term)
+stype_check_35 <- fn_return_data(filter_students_35, 'Student Type', 'Student has a cohort record') %>%
+  select(all_of(columns01), sgrchrt_chrt_code, student_type, first_term_enrolled, last_term_enrolled, entry_action, sgrchrt_chrt_code, sgrchrt_term_code_eff, all_of(columns02))
 
 #Courses
 filter_courses_01 <- filter(courses_sql, ssbsect_ssts_code != 'A' & ssbsect_enrl > 0)
