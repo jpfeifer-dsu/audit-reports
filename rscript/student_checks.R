@@ -2,10 +2,11 @@ library(tidyverse)
 library(lubridate)
 library(janitor)
 
+source(here::here('rscript', 'dsu_odbc_prod_connection_object.R'))
 
-load_data_from_rds('courses.RData')
-load_data_from_rds('courses.RData')
 
+student_sql <- load_data_from_rds('students.RData')
+courses_sql <- load_data_from_rds('courses.RData')
 
 #Function Definitions
 fn_return_data <- function(data, category, message, table_name, column_name) {

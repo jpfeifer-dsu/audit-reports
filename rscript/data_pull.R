@@ -9,23 +9,11 @@ library(janitor)
 # CONNECTION OBJECT ####
 source(here::here('rscript', 'dsu_odbc_prod_connection_object.R'))
 
-student_sql <- dbGetQuery(con, read_file(here::here('sql', 'student.sql'))) %>% 
-  mutate_if(is.factor, as.character) %>% 
-  clean_names() %>% 
-  as_tibble()
+# Pull Data from PROD
+student_sql <- get_data_from_sql("student.sql", "PROD")
+courses_sql <- get_data_from_sql('courses.sql',"PROD")
 
-cohorts_sql <- dbGetQuery(con, read_file(here::here('sql', 'cohorts.sql'))) %>% 
-  mutate_if(is.factor, as.character) %>% 
-  clean_names() %>% 
-  as_tibble()
-
-courses_sql <- dbGetQuery(con, read_file(here::here('sql', 'courses.sql'))) %>% 
-  mutate_if(is.factor, as.character) %>% 
-  clean_names() %>% 
-  as_tibble()
-
-# Save data as a RDate file
-save(student_sql, file = here::here('data', 'students.RData'))
-save(cohorts_sql, file = here::here('data', 'cohorts.RData'))
-save(courses_sql, file = here::here('data', 'courses.RData'))
+# Save data as file
+save_data_as_rds(courses_sql, 'courses.RData')
+save_data_as_rds(student_sql, 'students.RData')
 

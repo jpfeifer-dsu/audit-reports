@@ -1,6 +1,9 @@
 ---
-output: html_document
+output: 
+  html_document:
+    css: !expr here::here("www", "style.css")
 #runtime: shiny
+
 pagetitle: "..."
 ---
 
@@ -32,7 +35,7 @@ mkd_table <- function(err_data, title, subtitle) {
   gt(err_data) %>%
   tab_header(
     title = md(title),
-    subtitle = paste("**Error Message: ", subtitle,"**")
+    subtitle = paste("Error Message: ", subtitle)
     ) %>%
   tab_options(
     heading.subtitle.font.size = 12,
@@ -41,7 +44,7 @@ mkd_table <- function(err_data, title, subtitle) {
     column_labels.border.bottom.color = "black",
     table.align = "left",
     table.width = pct(100)
-  ) 
+  )
   }
 ```
 
