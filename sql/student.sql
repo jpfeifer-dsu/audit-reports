@@ -32,6 +32,7 @@
                       swvstdn_blck_code AS block,
                       SYSDATE AS daterun,
                       sfvregd_term_code AS term,
+                      stvterm_desc AS term_desc,
                       stvterm_start_date AS term_start_date,
                       a.attempted_hours,
                       CASE

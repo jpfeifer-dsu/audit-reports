@@ -1,9 +1,10 @@
 library(tidyverse)
 library(lubridate)
 library(janitor)
-library(xlsx)
 
 load(here::here('data', 'students.RData'))
+load(here::here('data', 'cohorts.RData'))
+load(here::here('data', 'courses.RData'))
 
 #Function Definitions
 fn_return_data <- function(data, category, message, table_name, column_name) {
@@ -20,6 +21,7 @@ fn_return_data <- function(data, category, message, table_name, column_name) {
 columns01 <- c('term', 'pidm', 'banner_id', 'first_name', 'last_name')
 columns02 <- c('error_message')
 columns03 <- c('banner_table', 'banner_column')
+columns04 <- c('ssbsect_term_code', 'ssbsect_crn', 'ssbsect_subj_code', 'ssbsect_crse_numb', 'ssbsect_seq_numb', 'ssbsect_enrl')
 
 #Demographics - Gender
 filter_error_01 <- filter(student_sql,!gender %in% c('M', 'F') | is.na(gender))
@@ -89,7 +91,7 @@ error_check_10 <- fn_return_data(filter_error_10, 'Demographics', 'Null citizens
 
 #Programs - HS students with no ND-CONC
 filter_programs_01 <- filter(student_sql, !cur_prgm %in% c('ND-CONC','ND-SA','ND-CE', 'ND-ACE') & entry_action == 'HS' & ! is.na(cur_prgm))
-programs_check_01 <- fn_return_data(filter_programs_01, 'Programs', 'Entry Action is HS and not a Non-Degree Program', 'swvstdn', 'swvstdn_program_1') %>%
+programs_check_01 <- fn_return_data(filter_programs_01, 'Programs', 'Entry Action is HS and not a Non-Degree Program', 'sorlcur', 'sorlcur_program') %>%
   select(all_of(columns01), entry_action, cur_prgm, high_school_grad_date, all_of(columns02), all_of(columns03))
 
 #Programs - Blank Programs
@@ -103,11 +105,11 @@ programs_check_02 <- fn_return_data(filter_programs_02, 'Programs', 'Blank Progr
 #Student Type - Checks to make sure student is returning student
 filter_students_01 <- filter(student_sql, ! is.na(first_term_enrolled_start_date) & first_term_enrolled_start_date > high_school_grad_date && student_type == 'R')
 stype_check_01 <- fn_return_data(filter_students_01, 'Student Type', 'First term enrolled is greater than HS grad date') %>%
-  select(all_of(columns01), entry_action, all_of(columns02))
+  select(all_of(columns01), entry_action, first_term_enrolled, high_school_grad_date, all_of(columns02))
 
 #Student Type - HS Concurrent Enrollment
 filter_students_02 <- filter(student_sql, term_start_date > high_school_grad_date & student_type == 'H')
-stype_check_02 <- fn_return_data(filter_students_02, 'Student Type', 'Start Term is Greater Than HS Grad Date', 'shrtgpa, sfrstcr', 'shrtgpa_term_code, sfrstcr_term_code') %>%
+stype_check_02 <- fn_return_data(filter_students_02, 'Student Type', 'Start Term Date is Greater Than HS Grad Date', 'shrtgpa, sfrstcr', 'shrtgpa_term_code, sfrstcr_term_code') %>%
   select(all_of(columns01), term_start_date, high_school_grad_date, student_type, all_of(columns02))
 
 filter_students_03 <- filter(student_sql, student_type == 'H' & !cur_prgm %in% c('ND-ACE', 'ND-CONC', 'ND-SA'))
@@ -115,7 +117,7 @@ stype_check_03 <- fn_return_data(filter_students_03, 'Student Type', 'Concurrent
   select(all_of(columns01), cur_prgm, student_type, entry_action, all_of(columns02))
 
 #Student Type - Personal Interest Students - NM
-filter_students_04 <- filter(student_sql, student_type == 'P' & !cur_prgm %in% c('ND-CE', 'ND-ESL'))
+filter_students_04 <- filter(student_sql, student_type == 'P' & !cur_prgm %in% c('ND-CE', 'ND-ESL') & ! is.na(cur_prgm))
 stype_check_04 <- fn_return_data(filter_students_04, 'Student Type', 'Degree Seeking Program, but Personal Interest Student Type') %>%
   select(all_of(columns01), cur_prgm, student_type, entry_action, all_of(columns02))
 
@@ -168,6 +170,11 @@ filter_students_15 <- select(student_sql, everything()) %>%
   filter(student_level == 'GR' & student_type == '4' & days_since_last_enrolled < 240)
 stype_check_15 <- fn_return_data(filter_students_15, 'Student Type', 'Graduate student has not attended before') %>%
   select(all_of(columns01), student_level, student_type, entry_action, last_term_enrolled, all_of(columns02))
+
+#Courses
+filter_courses_01 <- filter(courses_sql, ssbsect_ssts_code != 'A' & ssbsect_enrl > 0)
+crse_check_01 <- fn_return_data(filter_courses_01, 'Courses', 'Cancelled course still has enrollments') %>%
+  select(all_of(columns04))
 
 
 
