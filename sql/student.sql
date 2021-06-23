@@ -68,7 +68,9 @@
                       last_transfer_term,
                       last_transfer_term_start_date,
                       --transfer_credits
-                     f_calc_entry_action_4(sfvregd_pidm, sfvregd_term_code) AS entry_action
+                     f_calc_entry_action_4(sfvregd_pidm, sfvregd_term_code) AS entry_action,
+                     m.sgrchrt_chrt_code,
+                     m.sgrchrt_term_code_eff
                  FROM cte_credits a
            INNER JOIN dsc.dsc_swvstdn b
                    ON b.swvstdn_term_code = a.sfvregd_term_code AND b.swvstdn_pidm = a.sfvregd_pidm
@@ -165,4 +167,7 @@
              GROUP BY shrtgpa_pidm,
                       shrtgpa_levl_code
                ) k ON k.shrtgpa_pidm = a.sfvregd_pidm AND k. shrtgpa_levl_code = a.sfvregd_levl_code
-             LEFT JOIN stvterm l ON l.stvterm_code = a.sfvregd_term_code;
+             LEFT JOIN stvterm l ON l.stvterm_code = a.sfvregd_term_code
+             LEFT JOIN sgrchrt m ON m.sgrchrt_pidm = a.sfvregd_pidm
+                   AND (m.sgrchrt_chrt_code LIKE 'FT%'
+                     OR m.sgrchrt_chrt_code LIKE 'TU%');
