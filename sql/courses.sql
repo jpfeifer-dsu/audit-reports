@@ -1,16 +1,24 @@
-         SELECT ssbsect_term_code,
-                ssbsect_crn,
-                ssbsect_subj_code,
-                ssbsect_crse_numb,
-                ssbsect_seq_numb,
-                ssbsect_insm_code,
-                ssbsect_camp_code,
-                ssbsect_enrl,
-                ssbsect_ssts_code,
-                ssrsccd_sccd_code,
-                bldg_code1,
-                room_code1
-           FROM as_catalog_schedule a --as_catalog_schedule, , ssrsccd
+         SELECT ssbsect_term_code AS term,
+                ssbsect_crn AS crn,
+                ssbsect_subj_code AS subject_code,
+                ssbsect_crse_numb AS course_number,
+                ssbsect_seq_numb AS section_number,
+                ssbsect_insm_code AS instruction_method,
+                ssbsect_camp_code AS campus_code,
+                ssbsect_enrl AS enrollment,
+                ssbsect_ssts_code AS active_ind,
+                ssrsccd_sccd_code AS schedule_code,
+                bldg_code1 AS building_code_1,
+                room_code1 AS room_code_1,
+                bldg_code2 AS building_code_2,
+                room_code2 AS room_code_2,
+                bldg_code2 AS building_code_3,
+                room_code2 AS room_code_3,
+                bldg_code2 AS building_code_4,
+                room_code2 AS room_code_4,
+                bldg_code2 AS building_code_5,
+                room_code2 AS room_code_5
+           FROM as_catalog_schedule a
      INNER JOIN ssbsect b
              ON b.ssbsect_crn = a.crn_key
             AND b.ssbsect_term_code = a.term_code_key
