@@ -7,7 +7,7 @@
                 ssbsect_camp_code AS campus_code,
                 ssbsect_enrl AS enrollment,
                 ssbsect_ssts_code AS active_ind,
-                ssrsccd_sccd_code AS schedule_code,
+                ssrsccd_sccd_code AS budget_code,
                 bldg_code1 AS building_code_1,
                 room_code1 AS room_code_1,
                 bldg_code2 AS building_code_2,
@@ -17,7 +17,8 @@
                 bldg_code2 AS building_code_4,
                 room_code2 AS room_code_4,
                 bldg_code2 AS building_code_5,
-                room_code2 AS room_code_5
+                room_code2 AS room_code_5,
+                begin_time1 AS start_time_1
            FROM as_catalog_schedule a
      INNER JOIN ssbsect b
              ON b.ssbsect_crn = a.crn_key
@@ -25,8 +26,20 @@
      INNER JOIN ssrsccd c
              ON c.ssrsccd_crn = b.ssbsect_crn
             AND c.ssrsccd_term_code = a.term_code_key
+     LEFT JOIN scbsupp d ON d.scbsupp_crse_umber = 
           WHERE ssts_code = 'A'
            AND camp_code <> 'XXX'
            AND (ssbsect_term_code = (SELECT dsc.f_get_term(SYSDATE, 'nterm') - 10 AS prior_term FROM dual)
             OR ssbsect_term_code = (SELECT dsc.f_get_term(SYSDATE, 'nterm') AS current_term FROM dual)
             OR ssbsect_term_code = (SELECT dsc.f_get_term(SYSDATE, 'nterm') + 10 AS future_term FROM dual));
+
+
+SELECT *
+FROM scbsupp
+WHERE (scbsupp_occs_code = 'A' OR scbsupp_occs_code IS NULL);
+
+SELECT *
+FROM scbcrse;
+
+SELECT *
+FROM ssrsccd;
