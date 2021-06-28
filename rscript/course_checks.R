@@ -63,13 +63,7 @@ crse_check_04 <- filter(courses_sql,
 
 crse_check_05 <- filter(courses_sql, 
                         active_ind == 'A' & 
-                          (budget_code %in% c('BC', 'SF') &
-                             (str_detect(section_number, 'V', negate = TRUE) &
-                                str_detect(section_number, 'S', negate = TRUE) &
-                                str_detect(section_number, 'S^', negate = TRUE) &
-                                str_detect(section_number, 'X', negate = TRUE) &
-                                str_detect(section_number, 'J', negate = TRUE)))
-) %>%
-  fn_return_data('Courses', 'HS course assigned to incorrect budget code') %>%
-  select(all_of(courses_columns01), budget_code, all_of(courses_columns02))
+                        occs_code == 'A') %>%
+  fn_return_data('Courses', 'OCCS should be coded as V') %>%
+  select(all_of(courses_columns01), occs_code, all_of(courses_columns02))
 
