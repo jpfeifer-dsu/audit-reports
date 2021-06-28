@@ -56,23 +56,23 @@ fn_return_data('Demographics', 'Missing HS Code', 'sorhsch', 'sorhsch_sbgi_code'
   select(all_of(student_columns01), age, high_school_code, all_of(student_columns02), all_of(student_columns03))
 
 #Demographics - High School Graduation Date
-demo_error_07 <- filter(student_sql, birth_date >= high_school_grad_date)%>%
+demo_check_07 <- filter(student_sql, birth_date >= high_school_grad_date)%>%
   fn_return_data('Demographics', 'DOB must be before HS Graduation Date', 'sorhsch, spbpers', 'sorhsch_graduation_date, spbpers_birth_date') %>%
   select(all_of(student_columns01), age, high_school_grad_date, all_of(student_columns02), all_of(student_columns03))
 
 #Demographics - Duplicate SSN's
-demo_error_08 <- filter(student_sql, !is.na(student_sql$ssn)) %>%
+demo_check_08 <- filter(student_sql, !is.na(student_sql$ssn)) %>%
   get_dupes(ssn, term, student_level) %>%
   fn_return_data('Demographics', 'Duplicate SSN', 'spbpers', 'spbpers_ssn') %>%
   select(all_of(student_columns01), ssn_masked, student_level, all_of(student_columns02), all_of(student_columns03))
 
 #Demographics - Null citizenship
-demo_error_09 <- filter(student_sql, is.na(citz_code)) %>%
+demo_check_09 <- filter(student_sql, is.na(citz_code)) %>%
   fn_return_data('Demographics', 'Null citizenship code found', 'spbpers', 'spbpers_citz_code') %>%
   select(all_of(student_columns01), citz_code, all_of(student_columns02), all_of(student_columns03))
 
 #Demographics - High School Graduation Date is NULL
-demo_error_10 <- filter(student_sql, is.na(high_school_grad_date) & student_type != 'P') %>%
+demo_check_10 <- filter(student_sql, is.na(high_school_grad_date) & student_type != 'P') %>%
   fn_return_data('Demographics', 'Missing High School Graduation Date', 'sorhsch', 'sorhsch_graduation_date') %>%
   select(all_of(student_columns01), student_type, high_school_grad_date, all_of(student_columns02), all_of(student_columns03))
 
@@ -150,7 +150,7 @@ stype_check_08 <- filter(student_sql, !student_level == 'GR' & student_type == '
 
 stype_check_09 <- filter(student_sql, student_level == 'GR' & student_type == '5' & is.na(first_term_enrolled)) %>%
   fn_return_data('Student Type', 'Student Level and type does not align') %>%
-  select(all_of(student_columns01), student_level, , student_type, entry_action, all_of(student_columns02))
+  select(all_of(student_columns01), student_level, student_type, entry_action, all_of(student_columns02))
 
 #Student Type - Transfer Graduates
 stype_check_10 <- filter(student_sql, !student_level == 'GR' & student_type == '2') %>%

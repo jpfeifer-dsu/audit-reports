@@ -55,51 +55,12 @@ source(here::here('rscript', 'student_checks.R'))
 
 ## Student - Audit Reports {.tabset}
 
-```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
-list_download <- list(error_check_01, 
-     error_check_02, 
-     error_check_03, 
-     error_check_04, 
-     error_check_05, 
-     error_check_06,
-     error_check_07, 
-     error_check_08,
-     error_check_09, 
-     error_check_10, 
-     programs_check_01, 
-     programs_check_02,
-     stype_check_01,
-     stype_check_02,
-     stype_check_03,
-     stype_check_04,
-     stype_check_05,
-     stype_check_06,
-     stype_check_07,
-     stype_check_08,
-     stype_check_09,
-     stype_check_10,
-     stype_check_11,
-     stype_check_12,
-     stype_check_13,
-     stype_check_14,
-     stype_check_15
-     ) %>%
-  download_this(
-    output_name = "audit_demographics",
-    output_extension = ".xlsx",
-    button_label = "Download",
-    button_type = "primary",
-    has_icon = TRUE,
-    icon = "fa fa-save"
-  )
-```
-
 
 ### Demographics
 
 ```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
-if(nrow(error_check_01) > 0) {
-  mkd_table(error_check_01, "Gender", unique(error_check_01$error_message)) %>%
+if(nrow(demo_check_01) > 0) {
+  mkd_table(demo_check_01, "Gender", unique(demo_check_01$error_message)) %>%
     cols_label(term = md("**Term**"),
              pidm = md("**PIDM**"),
              banner_id = md("**Student ID**"),
@@ -116,8 +77,8 @@ if(nrow(error_check_01) > 0) {
 ```
 
 ```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
-if(nrow(error_check_02) > 0) {
-mkd_table(error_check_02, "County - US", unique(error_check_02$error_message)) %>%
+if(nrow(demo_check_02) > 0) {
+mkd_table(demo_check_02, "County - US", unique(demo_check_02$error_message)) %>%
     cols_label(term = md("**Term**"),
                pidm = md("**PIDM**"),
                banner_id = md("**Student ID**"),
@@ -135,8 +96,8 @@ mkd_table(error_check_02, "County - US", unique(error_check_02$error_message)) %
 ```
 
 ```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
-if(nrow(error_check_03) > 0) {
-mkd_table(error_check_03, "State", unique(error_check_03$error_message)) %>%
+if(nrow(demo_check_03) > 0) {
+mkd_table(demo_check_03, "State", unique(demo_check_03$error_message)) %>%
     cols_label(term = md("**Term**"),
                pidm = md("**PIDM**"),
                banner_id = md("**Student ID**"),
@@ -153,8 +114,8 @@ mkd_table(error_check_03, "State", unique(error_check_03$error_message)) %>%
 ```
 
 ```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
-if(nrow(error_check_04) > 0) {
-  mkd_table(error_check_04, "County - Utah", unique(error_check_04$error_message)) %>%
+if(nrow(demo_check_04) > 0) {
+  mkd_table(demo_check_04, "County - Utah", unique(demo_check_04$error_message)) %>%
     cols_label(term = md("**Term**"),
                pidm = md("**PIDM**"),
                banner_id = md("**Student ID**"),
@@ -172,8 +133,8 @@ if(nrow(error_check_04) > 0) {
 ```
 
 ```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
-if(nrow(error_check_05) > 0) {
-  mkd_table(error_check_05, "Missing Country", unique(error_check_05$error_message)) %>%
+if(nrow(demo_check_05) > 0) {
+  mkd_table(demo_check_05, "Missing Country", unique(demo_check_05$error_message)) %>%
     cols_label(term = md("**Term**"),
                pidm = md("**PIDM**"),
                banner_id = md("**Student ID**"),
@@ -190,8 +151,8 @@ if(nrow(error_check_05) > 0) {
 ```
 
 ```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE, fig.align='left'}
-if(nrow(error_check_07) > 0) {
-  mkd_table(error_check_07, "High School Code", unique(error_check_07$error_message)) %>%
+if(nrow(demo_check_07) > 0) {
+  mkd_table(demo_check_07, "High School Code", unique(demo_check_07$error_message)) %>%
     cols_label(term = md("**Term**"),
                pidm = md("**PIDM**"),
                banner_id = md("**Student ID**"),
@@ -209,8 +170,8 @@ if(nrow(error_check_07) > 0) {
 ```
 ### International Students
 ```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
-if(nrow(error_check_06) > 0) {
-mkd_table(error_check_06, "Visa Type & Citizenship Code", unique(error_check_06$error_message)) %>%
+if(nrow(int_error_01) > 0) {
+mkd_table(int_error_01, "Visa Type & Citizenship Code", unique(int_error_01$error_message)) %>%
       cols_label(term = md("**Term**"),
                  pidm = md("**PIDM**"),
                  banner_id = md("**Student ID**"),
@@ -238,9 +199,8 @@ if(nrow(programs_check_01) > 0) {
                banner_id = md("**Student ID**"),
                first_name = md("**First Name**"),
                last_name = md("**Last Name**"),
-               entry_action = md("**Entry Action**"),
-               cur_prgm = md("**Program**"),
-               high_school_grad_date = md("**HS Graduation Date**"),
+               cur_prgm = md("**Program 1**"),
+               cur_prgm_2 = md("**Program 2**"),
                error_message = md("**Error Message**"),
                banner_table = md("**Table Name(s)**"),
                banner_column = md("**Column Name(s)**")
@@ -253,6 +213,26 @@ if(nrow(programs_check_01) > 0) {
 ```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE, fig.align='left'}
 if(nrow(programs_check_02) > 0) {
   mkd_table(programs_check_02, "High School Code", unique(programs_check_02$error_message)) %>%
+    cols_label(term = md("**Term**"),
+               pidm = md("**PIDM**"),
+               banner_id = md("**Student ID**"),
+               first_name = md("**First Name**"),
+               last_name = md("**Last Name**"),
+               entry_action = md("**Entry Action**"),
+               cur_prgm = md("**Program**"),
+               high_school_grad_date = md("**HS Graduation Date**"),
+               error_message = md("**Error Message**"),
+               banner_table = md("**Table Name(s)**"),
+               banner_column = md("**Column Name(s)**")
+               ) %>%
+    cols_hide(error_message) %>%
+  br()
+}
+```
+
+```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE, fig.align='left'}
+if(nrow(programs_check_03) > 0) {
+  mkd_table(programs_check_03, "High School Code", unique(programs_check_03$error_message)) %>%
     cols_label(term = md("**Term**"),
                pidm = md("**PIDM**"),
                banner_id = md("**Student ID**"),
