@@ -4,7 +4,7 @@ output:
     css: !expr here::here("www", "style.css")
 #runtime: shiny
 
-pagetitle: "..."
+pagetitle: "Audit Reports"
 ---
 
 ```{r include=FALSE, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
@@ -38,7 +38,6 @@ mkd_table <- function(err_data, title, subtitle) {
     subtitle = paste("Error Message: ", subtitle)
     ) %>%
   tab_options(
-    heading.subtitle.font.size = 12,
     heading.align = "left",
     table.border.top.color = "white",
     column_labels.border.bottom.color = "black",
@@ -72,8 +71,7 @@ if(nrow(demo_check_01) > 0) {
              banner_table = md("**Table Name(s)**"),
              banner_column = md("**Column Name(s)**")
              ) %>%
-    cols_hide(error_message) %>%
-    br()
+    cols_hide(error_message)
 }
 ```
 
@@ -91,8 +89,7 @@ mkd_table(demo_check_02, "County - US", unique(demo_check_02$error_message)) %>%
                banner_table = md("**Table Name(s)**"),
                banner_column = md("**Column Name(s)**")
                ) %>%
-    cols_hide(error_message) %>%
-    br()
+    cols_hide(error_message)
 }
 ```
 
@@ -109,8 +106,7 @@ mkd_table(demo_check_03, "State", unique(demo_check_03$error_message)) %>%
                banner_table = md("**Table Name(s)**"),
                banner_column = md("**Column Name(s)**")
                ) %>%
-    cols_hide(error_message) %>%
-    br()
+    cols_hide(error_message)
 }
 ```
 
@@ -128,8 +124,7 @@ if(nrow(demo_check_04) > 0) {
                banner_table = md("**Table Name(s)**"),
                banner_column = md("**Column Name(s)**")
                ) %>%
-    cols_hide(error_message) %>%
-    br()
+    cols_hide(error_message)
     }
 ```
 
@@ -146,8 +141,7 @@ if(nrow(demo_check_05) > 0) {
                banner_table = md("**Table Name(s)**"),
                banner_column = md("**Column Name(s)**")
                ) %>%
-    cols_hide(error_message) %>%
-    br()
+    cols_hide(error_message)
     }
 ```
 
@@ -165,8 +159,7 @@ if(nrow(demo_check_07) > 0) {
                banner_table = md("**Table Name(s)**"),
                banner_column = md("**Column Name(s)**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 ### International Students
@@ -184,8 +177,7 @@ mkd_table(int_error_01, "Visa Type & Citizenship Code", unique(int_error_01$erro
                  banner_table = md("**Table Name(s)**"),
                  banner_column = md("**Column Name(s)**")
                  ) %>%
-      cols_hide(error_message) %>%
-      br()
+      cols_hide(error_message)
       }
 ```
 
@@ -206,8 +198,7 @@ if(nrow(programs_check_01) > 0) {
                banner_table = md("**Table Name(s)**"),
                banner_column = md("**Column Name(s)**")
                ) %>%
-    cols_hide(error_message) %>%
-    br()
+    cols_hide(error_message)
     }
 ```
 
@@ -226,8 +217,7 @@ if(nrow(programs_check_02) > 0) {
                banner_table = md("**Table Name(s)**"),
                banner_column = md("**Column Name(s)**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -246,8 +236,7 @@ if(nrow(programs_check_03) > 0) {
                banner_table = md("**Table Name(s)**"),
                banner_column = md("**Column Name(s)**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -265,8 +254,7 @@ if(nrow(stype_check_01) > 0) {
                high_school_grad_date = md("**HS Graduation Date**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -283,8 +271,7 @@ if(nrow(stype_check_02) > 0) {
                student_type = md("**Student Type**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -301,8 +288,7 @@ if(nrow(stype_check_03) > 0) {
                entry_action = md("**Entry Action**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -319,8 +305,7 @@ if(nrow(stype_check_04) > 0) {
                entry_action = md("**Entry Action**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -337,8 +322,7 @@ if(nrow(stype_check_05) > 0) {
                entry_action = md("**Entry Action**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -356,8 +340,7 @@ if(nrow(stype_check_06) > 0) {
                entry_action = md("**Entry Action**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -375,8 +358,7 @@ if(nrow(stype_check_07) > 0) {
                entry_action = md("**Entry Action**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -393,8 +375,7 @@ if(nrow(stype_check_08) > 0) {
                entry_action = md("**Entry Action**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -414,29 +395,28 @@ if(nrow(stype_check_09) > 0) {
                entry_action = md("**Entry Action**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
 ```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
-if(nrow(stype_check_10) > 0) {
-  mkd_table(stype_check_10, "First-time Freshman", unique(stype_check_10$error_message)) %>%
-    cols_label(term = md("**Term**"),
-               pidm = md("**PIDM**"),
-               banner_id = md("**Student ID**"),
-               first_name = md("**First Name**"),
-               last_name = md("**Last Name**"),
-               first_term_enrolled = md("**First Term Enrolled**"),
-               high_school_grad_date = md("**HS Graduation Date**"),
-               days_since_hs_graduation = md("**Days Since HS Graduation**"),
-               student_type = md("**Student Type**"),
-               entry_action = md("**Entry Action**"),
-               error_message = md("**Error Message**")
-               ) %>%
-    cols_hide(c('error_message', 'term_start_date')) %>%
-  br()
-}
+# if(nrow(stype_check_10) > 0) {
+#   mkd_table(stype_check_10, "First-time Freshman", unique(stype_check_10$error_message)) %>%
+#     cols_label(term = md("**Term**"),
+#                pidm = md("**PIDM**"),
+#                banner_id = md("**Student ID**"),
+#                first_name = md("**First Name**"),
+#                last_name = md("**Last Name**"),
+#                first_term_enrolled = md("**First Term Enrolled**"),
+#                high_school_grad_date = md("**HS Graduation Date**"),
+#                days_since_hs_graduation = md("**Days Since HS Graduation**"),
+#                student_type = md("**Student Type**"),
+#                entry_action = md("**Entry Action**"),
+#                error_message = md("**Error Message**")
+#                ) %>%
+#     cols_hide(c('error_message', 'term_start_date')) %>%
+#   br()
+# }
 ```
 
 ```{r, message = FALSE, warning=FALSE, error = FALSE, echo = FALSE}
@@ -453,8 +433,7 @@ if(nrow(stype_check_11) > 0) {
                entry_action = md("**Entry Action**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -472,8 +451,7 @@ if(nrow(stype_check_12) > 0) {
                entry_action = md("**Entry Action**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -490,8 +468,7 @@ if(nrow(stype_check_13) > 0) {
                entry_action = md("**Entry Action**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -508,8 +485,7 @@ if(nrow(crse_check_01) > 0) {
                enrollment = md("**Enrollment**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -523,8 +499,7 @@ if(nrow(crse_check_01) > 0) {
                enrollment = md("**Enrollment**"),
                error_message = md("**Error Message**")
                ) %>%
-    cols_hide(error_message) %>%
-  br()
+    cols_hide(error_message)
 }
 ```
 
@@ -540,7 +515,6 @@ if(nrow(crse_check_02) > 0) {
                error_message = md("**Error Message**")
                ) %>%
     cols_hide(error_message) %>%
-    cols_move(columns = enrollment, after = start_time_1)
-      br()
+    cols_move(columns = start_time_1, after = section_number)
 }
 ```

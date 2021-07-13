@@ -27,7 +27,7 @@ student_columns03 <- c('banner_table', 'banner_column')
 
 #Demographics - Gender
 demo_check_01 <- filter(student_sql,!gender %in% c('M', 'F') | is.na(gender)) %>%
-  fn_return_data('Demographics', 'Gender is is blank', 'spbpers', 'spbpers_sex') %>%
+  fn_return_data('Demographics', 'Gender is blank', 'spbpers', 'spbpers_sex') %>%
   select(all_of(student_columns01), gender, all_of(student_columns02), all_of(student_columns03))
 
 #Demographics - County
